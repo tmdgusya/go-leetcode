@@ -5,21 +5,25 @@ import (
 	"testing"
 )
 
-type Node struct {
-	Val       int
-	LeftNode  *Node
-	RightNode *Node
+type Number interface {
+	int | float32 | float64
 }
 
-func (node *Node) Left() *Node {
+type Node[T Number] struct {
+	Val       T
+	LeftNode  *Node[T]
+	RightNode *Node[T]
+}
+
+func (node *Node[T]) Left() *Node[T] {
 	return node.LeftNode
 }
 
-func (node *Node) Right() *Node {
+func (node *Node[T]) Right() *Node[T] {
 	return node.RightNode
 }
 
-func (selfNode *Node) AddNode(node *Node) {
+func (selfNode *Node[T]) AddNode(node *Node[T]) {
 	if selfNode.Val > node.Val {
 		if selfNode.LeftNode == nil {
 			selfNode.LeftNode = node
@@ -39,11 +43,11 @@ func (selfNode *Node) AddNode(node *Node) {
 	}
 }
 
-func NewNode(value int) *Node {
-	return &Node{Val: value, LeftNode: nil, RightNode: nil}
+func NewNode[T Number](value T) *Node[T] {
+	return &Node[T]{Val: value, LeftNode: nil, RightNode: nil}
 }
 
-func (node *Node) Print(depth int) {
+func (node *Node[T]) Print(depth int) {
 
 	fmt.Println("Self : ", node.Val, " Depth : ", depth)
 
