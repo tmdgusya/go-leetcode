@@ -49,17 +49,15 @@ func NewNode[T Number](value T) *Node[T] {
 
 func (node *Node[T]) Print(depth int) {
 
-	fmt.Println("Self : ", node.Val, " Depth : ", depth)
+	fmt.Println("Self : ", node.Val, " Depth : ", depth, "Addr : ", &node)
 
 	depth++
 
 	if node.LeftNode != nil {
-		fmt.Println("Left Node Value : ", node.LeftNode.Val, " Depth : ", depth)
 		node.LeftNode.Print(depth)
 	}
 
 	if node.RightNode != nil {
-		fmt.Println("Right Node Value : ", node.RightNode.Val, " Depth : ", depth)
 		node.RightNode.Print(depth)
 	}
 
@@ -67,25 +65,57 @@ func (node *Node[T]) Print(depth int) {
 
 // Search Target in Tree
 // Return Depth of Target
-// Time Complexity : O(logN)
+// Time Complexity : O(logN), Bad (O(N))
 // Space Complexity: O(logN)
-func (node *Node[T]) BinarySearch(target T, depth int) (d int, isExist bool) {
+func (node *Node[T]) BinarySearch(target *Node[T], depth int) (d int, isExist bool, targetNode *Node[T]) {
 	depth++
 
-	if target == node.Val {
-		fmt.Println("Target : ", target, " Cur : ", node.Val)
-		return depth, true
+	if target.Val == node.Val {
+		return depth, true, node
 	}
 
-	if target > node.Val {
+	if target.Val > node.Val {
 		return node.RightNode.BinarySearch(target, depth)
 	}
 
-	if target < node.Val {
+	if target.Val < node.Val {
 		return node.LeftNode.BinarySearch(target, depth)
 	}
 
-	return -1, false
+	return -1, false, nil
+}
+
+func (node *Node[T]) DeleteNode(target *Node[T]) bool {
+	_, isExist, targetNode := node.BinarySearch(target, 0)
+
+	if isExist == false || targetNode == nil {
+		return false
+	}
+	successor := targetNode.LeftNode.findSuccessor()
+
+	result := successor.swapNode(targetNode)
+
+	return result
+}
+
+func (node *Node[T]) findSuccessor() *Node[T] {
+	if node.RightNode == nil {
+		return node
+	}
+
+	return node.RightNode.findSuccessor()
+}
+
+func (node *Node[T]) swapNode(node1 *Node[T]) bool {
+	var temp Node[T] // like nil
+
+	node.LeftNode = node1.LeftNode
+	node.RightNode = node1.RightNode
+
+	*node1 = *node
+
+	*node = temp
+	return true
 }
 
 func TestNode(t *testing.T) {
@@ -124,11 +154,69 @@ func TestBinarySearch(t *testing.T) {
 	node1.AddNode(node6)
 	node1.AddNode(node7)
 
-	depth, isExist := node1.BinarySearch(7, 0)
-
-	fmt.Println("Depth : ", depth, " isExist : ", isExist)
+	depth, isExist, _ := node1.BinarySearch(node7, 0)
 
 	if depth != 2 && isExist != true {
 		t.Errorf("[Error] 7 is must be exist in Current Tree!")
+	}
+}
+
+func TestDeleteNode(t *testing.T) {
+	node1 := NewNode(5)
+	node2 := NewNode(2)
+	node3 := NewNode(3)
+	node4 := NewNode(4)
+	node5 := NewNode(1)
+	node6 := NewNode(6)
+	node7 := NewNode(7)
+
+	node1.AddNode(node2)
+	node1.AddNode(node3)
+	node1.AddNode(node4)
+	node1.AddNode(node5)
+	node1.AddNode(node6)
+	node1.AddNode(node7)
+
+	success := node1.DeleteNode(node6)
+
+	node1.Print(0)
+
+	if success != true && node1.RightNode.Val != 7 {
+		t.Errorf("Error")
+	}
+}
+
+func TestDeleteNode2(t *testing.T) {
+	node1 := NewNode(6)
+	node2 := NewNode(4)
+	node3 := NewNode(10)
+	node4 := NewNode(2)
+	node5 := NewNode(5)
+	node6 := NewNode(1)
+	node7 := NewNode(3)
+	node8 := NewNode(8)
+	node9 := NewNode(7)
+	node10 := NewNode(9)
+	node11 := NewNode(15)
+	node12 := NewNode(12)
+
+	node1.AddNode(node2)
+	node1.AddNode(node3)
+	node1.AddNode(node4)
+	node1.AddNode(node5)
+	node1.AddNode(node6)
+	node1.AddNode(node7)
+	node1.AddNode(node8)
+	node1.AddNode(node9)
+	node1.AddNode(node10)
+	node1.AddNode(node11)
+	node1.AddNode(node12)
+
+	success := node1.DeleteNode(node3)
+
+	node1.Print(0)
+
+	if success != true && node1.RightNode.Val != 9 {
+		t.Errorf("Error")
 	}
 }
