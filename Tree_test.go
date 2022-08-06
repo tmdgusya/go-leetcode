@@ -65,6 +65,29 @@ func (node *Node[T]) Print(depth int) {
 
 }
 
+// Search Target in Tree
+// Return Depth of Target
+// Time Complexity : O(logN)
+// Space Complexity: O(logN)
+func (node *Node[T]) BinarySearch(target T, depth int) (d int, isExist bool) {
+	depth++
+
+	if target == node.Val {
+		fmt.Println("Target : ", target, " Cur : ", node.Val)
+		return depth, true
+	}
+
+	if target > node.Val {
+		return node.RightNode.BinarySearch(target, depth)
+	}
+
+	if target < node.Val {
+		return node.LeftNode.BinarySearch(target, depth)
+	}
+
+	return -1, false
+}
+
 func TestNode(t *testing.T) {
 	node1 := NewNode(5)
 	node2 := NewNode(2)
@@ -82,4 +105,30 @@ func TestNode(t *testing.T) {
 	node1.AddNode(node7)
 
 	node1.Print(0)
+
+}
+
+func TestBinarySearch(t *testing.T) {
+	node1 := NewNode(5)
+	node2 := NewNode(2)
+	node3 := NewNode(3)
+	node4 := NewNode(4)
+	node5 := NewNode(1)
+	node6 := NewNode(6)
+	node7 := NewNode(7)
+
+	node1.AddNode(node2)
+	node1.AddNode(node3)
+	node1.AddNode(node4)
+	node1.AddNode(node5)
+	node1.AddNode(node6)
+	node1.AddNode(node7)
+
+	depth, isExist := node1.BinarySearch(7, 0)
+
+	fmt.Println("Depth : ", depth, " isExist : ", isExist)
+
+	if depth != 2 && isExist != true {
+		t.Errorf("[Error] 7 is must be exist in Current Tree!")
+	}
 }
