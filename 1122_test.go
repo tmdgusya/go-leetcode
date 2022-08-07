@@ -8,7 +8,7 @@ import (
 
 // Space Complexity : O(N)
 // Time Complexity: O(NlogN)
-func TestCase1(t *testing.T) {
+func testCase1(t *testing.T) {
 	arr1 := [11]int{2, 3, 1, 3, 2, 4, 6, 7, 9, 2, 19}
 	arr2 := [6]int{2, 1, 4, 3, 9, 6}
 
