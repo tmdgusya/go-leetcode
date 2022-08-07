@@ -157,6 +157,18 @@ func (node *Node[T]) TraversalPostOrder() {
 	fmt.Println(node.Val)
 }
 
+func (node *Node[T]) deepCopy() *Node[T] {
+	if node == nil {
+		return nil
+	}
+
+	copyNode := NewNode(node.Val)
+	copyNode.LeftNode = node.LeftNode.deepCopy()
+	copyNode.RightNode = node.RightNode.deepCopy()
+
+	return copyNode
+}
+
 func (node *Node[T]) swapNode(node1 *Node[T]) bool {
 	var temp Node[T] // like nil
 
@@ -326,5 +338,41 @@ func TestTraversalPostOrder(t *testing.T) {
 	node1.AddNode(node12)
 
 	node1.TraversalPostOrder()
+
+}
+
+func TestDeepCopy(t *testing.T) {
+	node1 := NewNode(6)
+	node2 := NewNode(4)
+	node3 := NewNode(10)
+	node4 := NewNode(2)
+	node5 := NewNode(5)
+	node6 := NewNode(1)
+	node7 := NewNode(3)
+	node8 := NewNode(8)
+	node9 := NewNode(7)
+	node10 := NewNode(9)
+	node11 := NewNode(15)
+	node12 := NewNode(12)
+
+	node1.AddNode(node2)
+	node1.AddNode(node3)
+	node1.AddNode(node4)
+	node1.AddNode(node5)
+	node1.AddNode(node6)
+	node1.AddNode(node7)
+	node1.AddNode(node8)
+	node1.AddNode(node9)
+	node1.AddNode(node10)
+	node1.AddNode(node11)
+	node1.AddNode(node12)
+
+	copyNode := node1.deepCopy()
+
+	fmt.Print(copyNode)
+
+	if copyNode.LeftNode.LeftNode.Val != node1.LeftNode.LeftNode.Val {
+		t.Error("Not Deep Copy...")
+	}
 
 }
