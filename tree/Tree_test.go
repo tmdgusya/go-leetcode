@@ -1,4 +1,4 @@
-package golangleetcode
+package tree_test
 
 import (
 	"fmt"
@@ -104,6 +104,57 @@ func (node *Node[T]) findSuccessor() *Node[T] {
 	}
 
 	return node.RightNode.findSuccessor()
+}
+
+func (node *Node[T]) TraversalPreOrder() {
+	if node == nil {
+		return
+	}
+
+	if node.LeftNode != nil {
+		node.LeftNode.TraversalPreOrder()
+	}
+
+	fmt.Println(node.Val)
+
+	if node.RightNode != nil {
+		node.RightNode.TraversalPreOrder()
+	}
+}
+
+// If you want deep copy tree, then you use it
+// Use it when if you want search root node fisrt, before search leaf nodes
+func (node *Node[T]) TraversalInOrder() {
+	if node == nil {
+		return
+	}
+
+	fmt.Println(node.Val)
+
+	if node.LeftNode != nil {
+		node.LeftNode.TraversalInOrder()
+	}
+
+	if node.RightNode != nil {
+		node.RightNode.TraversalInOrder()
+	}
+}
+
+// first see leef node, then see root node
+func (node *Node[T]) TraversalPostOrder() {
+	if node == nil {
+		return
+	}
+
+	if node.LeftNode != nil {
+		node.LeftNode.TraversalPostOrder()
+	}
+
+	if node.RightNode != nil {
+		node.RightNode.TraversalPostOrder()
+	}
+
+	fmt.Println(node.Val)
 }
 
 func (node *Node[T]) swapNode(node1 *Node[T]) bool {
@@ -213,10 +264,67 @@ func TestDeleteNode2(t *testing.T) {
 	node1.AddNode(node12)
 
 	success := node1.DeleteNode(node3)
-
-	node1.Print(0)
-
 	if success != true && node1.RightNode.Val != 9 {
 		t.Errorf("Error")
 	}
+}
+
+func TestTraversalPreOrder(t *testing.T) {
+	node1 := NewNode(6)
+	node2 := NewNode(4)
+	node3 := NewNode(10)
+	node4 := NewNode(2)
+	node5 := NewNode(5)
+	node6 := NewNode(1)
+	node7 := NewNode(3)
+	node8 := NewNode(8)
+	node9 := NewNode(7)
+	node10 := NewNode(9)
+	node11 := NewNode(15)
+	node12 := NewNode(12)
+
+	node1.AddNode(node2)
+	node1.AddNode(node3)
+	node1.AddNode(node4)
+	node1.AddNode(node5)
+	node1.AddNode(node6)
+	node1.AddNode(node7)
+	node1.AddNode(node8)
+	node1.AddNode(node9)
+	node1.AddNode(node10)
+	node1.AddNode(node11)
+	node1.AddNode(node12)
+
+	node1.TraversalPreOrder()
+
+}
+
+func TestTraversalPostOrder(t *testing.T) {
+	node1 := NewNode(6)
+	node2 := NewNode(4)
+	node3 := NewNode(10)
+	node4 := NewNode(2)
+	node5 := NewNode(5)
+	node6 := NewNode(1)
+	node7 := NewNode(3)
+	node8 := NewNode(8)
+	node9 := NewNode(7)
+	node10 := NewNode(9)
+	node11 := NewNode(15)
+	node12 := NewNode(12)
+
+	node1.AddNode(node2)
+	node1.AddNode(node3)
+	node1.AddNode(node4)
+	node1.AddNode(node5)
+	node1.AddNode(node6)
+	node1.AddNode(node7)
+	node1.AddNode(node8)
+	node1.AddNode(node9)
+	node1.AddNode(node10)
+	node1.AddNode(node11)
+	node1.AddNode(node12)
+
+	node1.TraversalPostOrder()
+
 }
